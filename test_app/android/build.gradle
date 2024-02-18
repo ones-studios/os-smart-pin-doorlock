@@ -16,7 +16,7 @@ allprojects {
         google()
         mavenCentral()
         maven {
-          url "https://maven.pkg.github.com/discovery-ltd/repo"
+          url "https://maven.pkg.github.com/ones-studio/repo"
           credentials {
             username mavenUsername
             password mavenPassword
@@ -36,6 +36,6 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
-task clean(type: Delete) {
+tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

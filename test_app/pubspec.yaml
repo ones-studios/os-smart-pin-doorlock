@@ -12,11 +12,13 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   flutter_modular: ^5.0.3
+#  smart_pin_doorlock:
+#    git:
+#      url: git@github.com:ones-studios/os-smart-pin-doorlock.git
+#      path: smart_pin_doorlock
+#      ref: master #project
   smart_pin_doorlock:
-    git:
-      url: git@github.com:discovery-ltd/os-smart-pin-doorlock-flutter.git
-      path: smart_pin_doorlock
-      ref: master #project
+    path: ../smart_pin_doorlock
       
 dev_dependencies:
   flutter_test:
