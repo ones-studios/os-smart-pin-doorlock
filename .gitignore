@@ -15,6 +15,10 @@
 *.iws
 .idea/
 
+.gradle/
+test_app/android
+test_app/ios
+
 # Visual Studio Code related
 .classpath
 .project
