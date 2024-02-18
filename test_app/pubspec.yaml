@@ -1,0 +1,26 @@
+name: test_app
+description: "Test app for Smart Pin Doorlock Widget"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  flutter_modular: ^5.0.3
+  smart_pin_doorlock:
+    git:
+      url: git@github.com:discovery-ltd/os-smart-pin-doorlock-flutter.git
+      path: smart_pin_doorlock
+      ref: master #project
+      
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
