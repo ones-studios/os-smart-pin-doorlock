@@ -3,6 +3,7 @@ import 'package:getwidget/getwidget.dart';
 import 'dart:math';
 import 'package:smart_pin_doorlock/di/database_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:intl/intl.dart';
 
 class GeneratePinCodeScreen extends StatefulWidget {
   final VoidCallback onPinCodeConfirmed; // Define a callback function parameter
@@ -40,14 +41,42 @@ class _MyAppState extends State<GeneratePinCodeScreen> {
     }
   }
 
+  // Function to convert datetime to database format (replace with your implementation)
+  String convertDatetime(DateTime datetime) {
+    // Implement conversion logic here
+    // Example: return datetime.toIso8601String();
+
+    return DateFormat.yMEd().add_jms().format(datetime);
+  }
+
   void confirmPinCode(Database database) async {
-    if(pinCode.length == 6) {
-      await database.insert('pincodes', {'pincode': pinCode});
+    if (pinCode.length == 6) {
+      final deviceDatetime = DateTime.now();
+      final databaseDatetime = convertDatetime(deviceDatetime);
+
+      // Check for duplicate pin code before inserting
+      final duplicated = await database.query(
+        'pincodes',
+        where: 'pincode = ?',
+        whereArgs: [pinCode],
+      );
+
+      if (!duplicated.isNotEmpty) {
+        await database.insert(
+          'pincodes',
+          {'pincode': pinCode, 'createdAt': databaseDatetime},
+        );
+        widget.onPinCodeConfirmed();
+      } else {
+        // Handle duplicate pin code here, e.g., display an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Pin code already exists')),
+        );
+      }
+      setState(() {
+        pinCode = "";
+      });
     }
-    setState(() {
-      pinCode = "";
-    });
-    widget.onPinCodeConfirmed(); // Invoke the callback function
   }
 
   @override

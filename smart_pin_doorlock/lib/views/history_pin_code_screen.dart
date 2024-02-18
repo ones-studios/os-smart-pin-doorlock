@@ -44,18 +44,48 @@ class _MyAppState extends State<HistoryPinCodeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(""),
+        actions: [
+          GFButton(
+            onPressed: _clearAllPinCodes,
+            text: 'Delete All',
+            textStyle: const TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
       body: ListView.builder(
         itemCount: pinCodes.length,
         itemBuilder: (context, index) {
-          final pincode = pinCodes[index]['pincode'];
-          final createdAt = DateTime.parse(pinCodes[index]['createdAt']);
+          final pinCode = pinCodes[index]['pincode'];
+          final createdAt = pinCodes[index]['createdAt'];
 
-          return GFListTile(
-            titleText: pincode,
-            subTitleText: DateFormat('yyyy-MM-dd hh:mm:ss').format(createdAt),
+          return Dismissible(
+            key: UniqueKey(), // Ensure unique keys for dismissible items
+            onDismissed: (direction) {
+              _deletePinCode(pinCodes[index]['id']);
+            },
+            child: GFListTile(
+              titleText: pinCode,
+              subTitleText: createdAt.toString(),
+            ),
           );
         },
       ),
     );
+  }
+
+  Future<void> _clearAllPinCodes() async {
+    final database = DatabaseProvider.of(context).database;
+    await database.delete('pincodes');
+    setState(() {
+      pinCodes = [];
+    });
+  }
+
+  Future<void> _deletePinCode(int id) async {
+    final database = DatabaseProvider.of(context).database;
+    await database.delete('pincodes', where: 'id = ?', whereArgs: [id]);
+    fetchPinCodes(); // Refresh the list after deletion
   }
 }

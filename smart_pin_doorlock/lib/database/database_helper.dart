@@ -15,7 +15,7 @@ class DatabaseHelper {
           CREATE TABLE $TABLE_NAME (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             pincode TEXT,
-            createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            createdAt TEXT
           )
         ''');
       },
