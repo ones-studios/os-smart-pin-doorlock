@@ -16,6 +16,7 @@ class GeneratePinCodeScreen extends StatefulWidget {
 
 class _MyAppState extends State<GeneratePinCodeScreen> {
   String pinCode = "";
+  String personName = ""; // Add a variable to store the person's name
 
   void clearPincode() {
     setState(() {
@@ -50,7 +51,7 @@ class _MyAppState extends State<GeneratePinCodeScreen> {
   }
 
   void confirmPinCode(Database database) async {
-    if (pinCode.length == 6) {
+    if (pinCode.length == 6 && personName.isNotEmpty) {
       final deviceDatetime = DateTime.now();
       final databaseDatetime = convertDatetime(deviceDatetime);
 
@@ -64,18 +65,30 @@ class _MyAppState extends State<GeneratePinCodeScreen> {
       if (!duplicated.isNotEmpty) {
         await database.insert(
           'pincodes',
-          {'pincode': pinCode, 'createdAt': databaseDatetime},
+          {
+            'pincode': pinCode,
+            'personName': personName,
+            'createdAt': databaseDatetime
+          },
         );
         widget.onPinCodeConfirmed();
       } else {
         // Handle duplicate pin code here, e.g., display an error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Pin code already exists')),
+        GFToast.showToast(
+          'Pin code already exists',
+          context,
         );
       }
       setState(() {
         pinCode = "";
+        personName = "";
       });
+    } else {
+      // Display an error message if the name is empty
+      GFToast.showToast(
+        'Please enter the person\'s name',
+        context,
+      );
     }
   }
 
@@ -86,115 +99,130 @@ class _MyAppState extends State<GeneratePinCodeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  Text(
-                    pinCode,
-                    style: const TextStyle(fontSize: 36),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 40),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  color: Colors.white,
+                  child: Column(
                     children: [
-                      GFButton(
-                        onPressed: generateNewPinCode,
-                        text: 'Generate Pincode',
-                        textStyle: const TextStyle(fontSize: 24),
+                      GFTextField(
+                        decoration: const InputDecoration(labelText: 'Person Name'),
+                        controller: TextEditingController(text: personName),
+                        onChanged: (value) => personName = value,
                       ),
-                      SizedBox(width: 20),
-                      GFButton(
-                        onPressed: clearPincode,
-                        text: 'Clear',
-                        textStyle: const TextStyle(fontSize: 24),
+                      const SizedBox(
+                        height: 32,
+                      ),
+                      Text(
+                        pinCode,
+                        style: const TextStyle(fontSize: 48),
+                      ),
+                      const SizedBox(
+                        height: 32,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GFButton(
+                            onPressed: generateNewPinCode,
+                            text: 'Generate Pincode',
+                            textStyle: const TextStyle(fontSize: 24),
+                          ),
+                          SizedBox(width: 20),
+                          GFButton(
+                            onPressed: clearPincode,
+                            text: 'Clear',
+                            textStyle: const TextStyle(fontSize: 24),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Text('1', style: const TextStyle(fontSize: 24)),
+                            onPressed: () => addToPinCode('1'),
+                          ),
+                          SizedBox(width: 20),
+                          IconButton(
+                            icon: Text('2', style: const TextStyle(fontSize: 24)),
+                            onPressed: () => addToPinCode('2'),
+                          ),
+                          SizedBox(width: 20),
+                          IconButton(
+                            icon: Text('3', style: const TextStyle(fontSize: 24)),
+                            onPressed: () => addToPinCode('3'),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Text('4', style: const TextStyle(fontSize: 24)),
+                            onPressed: () => addToPinCode('4'),
+                          ),
+                          SizedBox(width: 20),
+                          IconButton(
+                            icon: Text('5', style: const TextStyle(fontSize: 24)),
+                            onPressed: () => addToPinCode('5'),
+                          ),
+                          SizedBox(width: 20),
+                          IconButton(
+                            icon: Text('6', style: const TextStyle(fontSize: 24)),
+                            onPressed: () => addToPinCode('6'),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Text('7', style: const TextStyle(fontSize: 24)),
+                            onPressed: () => addToPinCode('7'),
+                          ),
+                          SizedBox(width: 20),
+                          IconButton(
+                            icon: Text('8', style: const TextStyle(fontSize: 24)),
+                            onPressed: () => addToPinCode('8'),
+                          ),
+                          SizedBox(width: 20),
+                          IconButton(
+                            icon: Text('9', style: const TextStyle(fontSize: 24)),
+                            onPressed: () => addToPinCode('9'),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: Text('0', style: const TextStyle(fontSize: 24)),
+                            onPressed: () => addToPinCode('0'),
+                          ),
+                          SizedBox(width: 20),
+                          GFButton(
+                            onPressed: () => {
+                              confirmPinCode(database)
+                            },
+                            text: 'Confirm',
+                            textStyle: const TextStyle(fontSize: 24),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Text('1', style: const TextStyle(fontSize: 24)),
-                        onPressed: () => addToPinCode('1'),
-                      ),
-                      SizedBox(width: 20),
-                      IconButton(
-                        icon: Text('2', style: const TextStyle(fontSize: 24)),
-                        onPressed: () => addToPinCode('2'),
-                      ),
-                      SizedBox(width: 20),
-                      IconButton(
-                        icon: Text('3', style: const TextStyle(fontSize: 24)),
-                        onPressed: () => addToPinCode('3'),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Text('4', style: const TextStyle(fontSize: 24)),
-                        onPressed: () => addToPinCode('4'),
-                      ),
-                      SizedBox(width: 20),
-                      IconButton(
-                        icon: Text('5', style: const TextStyle(fontSize: 24)),
-                        onPressed: () => addToPinCode('5'),
-                      ),
-                      SizedBox(width: 20),
-                      IconButton(
-                        icon: Text('6', style: const TextStyle(fontSize: 24)),
-                        onPressed: () => addToPinCode('6'),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Text('7', style: const TextStyle(fontSize: 24)),
-                        onPressed: () => addToPinCode('7'),
-                      ),
-                      SizedBox(width: 20),
-                      IconButton(
-                        icon: Text('8', style: const TextStyle(fontSize: 24)),
-                        onPressed: () => addToPinCode('8'),
-                      ),
-                      SizedBox(width: 20),
-                      IconButton(
-                        icon: Text('9', style: const TextStyle(fontSize: 24)),
-                        onPressed: () => addToPinCode('9'),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Text('0', style: const TextStyle(fontSize: 24)),
-                        onPressed: () => addToPinCode('0'),
-                      ),
-                      SizedBox(width: 20),
-                      GFButton(
-                        onPressed: () => {
-                          confirmPinCode(database)
-                        },
-                        text: 'Confirm',
-                        textStyle: const TextStyle(fontSize: 24),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            )
-          ],
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -15,6 +15,7 @@ class DatabaseHelper {
           CREATE TABLE $TABLE_NAME (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             pincode TEXT,
+            personName TEXT,
             createdAt TEXT
           )
         ''');
