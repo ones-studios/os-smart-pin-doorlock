@@ -76,7 +76,7 @@ dependencies:
   ...
   smart_pin_doorlock:
     git:
-      url: git@github.com:discovery-ltd/os-smart-pin-doorlock-flutter.git
+      url: git@github.com:ones-studios/os-smart-pin-doorlock-flutter.git
       path: smart_pin_doorlock
       ref: <latest version>
 ```
